@@ -1,9 +1,9 @@
-import os, requests, time
+import os, platform, requests, time
 import threading
 from decimal import *
 
 push_default_timeout = 8000
-fomo_threshold = 1.5
+fomo_threshold = 2
 # default is 5 minute cycle
 minute_cycle = 30
 
@@ -41,14 +41,31 @@ def colorprint(text, color=None):
 
 def pushNotification(message, timeout):
 
-    if message:
-        wrapped = "\"%s\"" % message
-        command = "notify-send -a terminal -t %i %s" % (timeout, wrapped)
-        os.system(command)
+    # Determine OS filepaths
+    if platform.system() == "Linux":
+
+        if message:
+            wrapped = "\"%s\"" % message
+            command = "notify-send -a terminal -t %i %s" % (timeout, wrapped)
+            os.system(command)
+
+        else:
+
+            print("Empty command was send to pushNotification function")
+
+    # Filepath for windows
+    elif platform.system() == "Windows":
+
+        print("windows")
+
+    # Filepath for Mac untested
+    elif platform.system() == "Darwin":
+
+        os.system("""osascript -e 'display notification "{}" with title "{}"' """.format(message, "Stratis Notifier"))
 
     else:
 
-        print("Empty command was send to pushNotification function")
+        print("Unable to determine OS")
 
 def getStrat():
 
